@@ -1,0 +1,15 @@
+<seelog minlevel="info" critmsgcount="500" maxinterval="100000000"
+ mininterval="2000000" type="adaptive">
+ <exceptions>
+ <exception minlevel="error" filepattern="test*"/>
+ </exceptions>
+ <outputs formatid="fmtinfo">
+ <console formatid="fmtinfo"/>
+ <rollingfile type="size" maxrolls="5" maxsize="30000000"
+ filename="{{LOCALAPPDATA}}\Amazon\SSM\Logs\amazon-ssm-agent.log"/>
+ <filter formatid="fmterror" levels="error,critical">
+ <rollingfile type="size" maxrolls="5" maxsize="10000000"
+ filename="{{LOCALAPPDATA}}\Amazon\SSM\Logs\errors.log"/>
+ </filter>
+ <custom name="cloudwatch_receiver" formatid="fmtdebug" data-log-group="<CLOUDWATCH_LOG_GROUP_NAME>"/>
+ </outputs> 

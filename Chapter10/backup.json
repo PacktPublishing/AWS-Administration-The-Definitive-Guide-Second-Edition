@@ -1,0 +1,119 @@
+{
+  "objects": [
+    {
+      "failureAndRerunMode": "CASCADE",
+      "resourceRole": "DataPipelineDefaultResourceRole",
+      "role": "DataPipelineDefaultRole",
+      "pipelineLogUri": "#{myDataPipelineLogs}",
+      "scheduleType": "ONDEMAND",
+      "name": "Default",
+      "id": "Default"
+    },
+    {
+      "filePath": "#{myInputS3FilePath}",
+      "name": "inputS3Bucket",
+      "id": "InputS3FilePath",
+      "type": "S3DataNode"
+    },
+    {
+      "filePath": "#{myOutputS3FilePath}/#{format(@scheduledStartTime, 'YYYY-MM-dd-HH-mm-ss')}.bak",
+      "name": "outputS3Bucket",
+      "id": "OutputS3FilePath",
+      "type": "S3DataNode"
+    },
+    {
+      "role": "DataPipelineDefaultRole",
+      "subject": "Success!!",
+      "name": "SNSAlertonSuccess",
+      "id": "OnSuccessSNSAlert",
+      "message": "File successfully copied!",
+      "type": "SnsAlarm",
+      "topicArn": "#{mySNSTopicARN}"
+    },
+    {
+      "role": "DataPipelineDefaultRole",
+      "subject": "Failure",
+      "name": "SNSAlertonFailure",
+      "id": "OnFailSNSAlert",
+      "message": "File was not copied over successfully. Pls check with Data Pipeline Logs",
+      "type": "SnsAlarm",
+      "topicArn": "#{mySNSTopicARN}"
+    },
+    {
+      "resourceRole": "DataPipelineDefaultResourceRole",
+      "role": "DataPipelineDefaultRole",
+      "name": "EC2Resource",
+      "id": "EC2InstanceResource",
+      "type": "Ec2Resource",
+      "instanceType": "#{myEC2InstanceType}",
+      "terminateAfter": "#{myEC2InstanceTermination} Minutes"
+    },
+
+    {
+      "output": {
+        "ref": "OutputS3FilePath"
+      },
+      "input": {
+        "ref": "InputS3FilePath"
+      },
+      "onFail": {
+        "ref": "OnFailSNSAlert"
+      },
+      "name": "FileCopyActivity",
+      "id": "CopyActivityId",
+      "runsOn": {
+        "ref": "EC2InstanceResource"
+      },
+      "type": "CopyActivity",
+      "onSuccess": {
+        "ref": "OnSuccessSNSAlert"
+      }
+    }
+  ],
+  "parameters": [
+    {
+      "watermark": "s3://mysourcebucket/filename",
+      "description": "Source File Path:",
+      "id": "myInputS3FilePath",
+      "type": "AWS::S3::ObjectKey",
+      "myComment": "The File path from the Input S3 Bucket"
+    },
+    {
+      "watermark": "s3://mydestinationbucket/filename",
+      "description": "Destination (Backup) File Path:",
+      "id": "myOutputS3FilePath",
+      "myComment": "The File path for the Output S3 Bucket",
+      "type": "AWS::S3::ObjectKey"
+    },
+    {
+      "watermark": "arn:aws:sns:us-east-1:28619EXAMPLE:ExampleTopic",
+      "description": "SNS Topic ARN:",
+      "id": "mySNSTopicARN",
+      "type": "string",
+      "myComment": "The SNS Topic's ARN for notifications"
+    },
+    {
+      "watermark": "EC2 Instance Type",
+      "description": "EC2 Instance Type:",
+      "id": "myEC2InstanceType",
+      "myComment": "The EC2 Instance Type for Data Pipeline",
+      "type": "string",
+      "default": "t1.micro"
+    },
+    {
+      "watermark": "EC2 Instance Termination (Minutes)",
+      "description": "EC2 Instance Termination (Minutes):",
+      "id": "myEC2InstanceTermination",
+      "myComment": "The EC2 Instance Termination in minutes",
+      "type": "string",
+      "default": "20"
+    },
+    {
+      "watermark": "s3://data-pipelinelogbucket",
+      "description": "S3 Bucket Path to Data Pipeline Logs:",
+      "id": "myDataPipelineLogs",
+      "myComment": "The S3 Bucket path for storing Data Pipeline Logs",
+      "type": "AWS::S3::ObjectKey"
+    }
+  ]
+}

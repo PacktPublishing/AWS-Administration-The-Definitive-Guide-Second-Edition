@@ -1,0 +1,38 @@
+{
+	"schemaVersion": "2.0",
+	"description": "Install or uninstall the latest version or specified version of LAMP stack.",
+	"parameters": {
+		"action": {
+			"description": "(Required) Specify whether or not to install or uninstall the package.",
+			"type": "String",
+			"allowedValues": [
+				"Install",
+				"Uninstall"
+			]
+		},
+		"name": {
+			"description": "(Required) The LAMP package to install/uninstall.",
+			"type": "String",
+			"allowedValues": [
+				"apache2",
+				"mysql-server",
+				"php"
+			]
+		},
+		"version": {
+			"description": "(Optional) A specific version of the package to install or uninstall.",
+			"type": "String",
+			"default": "",
+			"allowedPattern": "(^(?:(\\d+)\\.)(?:(\\d+)\\.)(\\d+)$|^$)"
+		}
+	},
+	"mainSteps": [{
+		"action": "aws:configurePackage",
+		"name": "configurePackage",
+		"inputs": {
+			"name": "{{ name }}",
+			"action": "{{ action }}",
+			"version": "{{ version }}"
+		}
+	}]
+}

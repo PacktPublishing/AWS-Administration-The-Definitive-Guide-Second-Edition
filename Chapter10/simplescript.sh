@@ -1,0 +1,12 @@
+#!/bin/bash
+echo "----------------------------------"
+echo "Your username is: $(echo $USER)"
+echo "----------------------------------"
+echo "The current date and time : $(date)"
+echo "----------------------------------"
+echo "Users currently logged on this system: "
+echo "$(who)"
+echo "----------------------------------"
+echo "AWS CLI installed at: "
+echo "$(aws --version)"
+echo "----------------------------------"

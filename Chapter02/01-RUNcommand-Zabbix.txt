@@ -1,0 +1,16 @@
+sudo wget http://repo.zabbix.com/zabbix/3.2/ubuntu/pool/main/z/zabbix-release/zabbix-release_3.4-1+xenial_all.deb
+sudo dpkg -i zabbix-release_3.4-1+xenial_all.deb
+sudo apt-get update -y
+sudo apt-get install zabbix-agent -y
+
+sudo bash -c "cat > /etc/zabbix/zabbix_agentd.conf <<EOF
+PidFile=/var/run/zabbix/zabbix_agentd.pid
+LogFile=/var/log/zabbix/zabbix_agentd.log
+LogFileSize=0
+Server=192.168.32.50 # Private IP of my Zabbix Server on EC2
+ServerActive=192.168.32.50 # Private IP of my Zabbix Server on EC2
+Include=/etc/zabbix/zabbix_agentd.d/*.conf
+EOF"
+
+sudo service zabbix-agent status
+sudo service zabbix-agent restart

@@ -1,0 +1,40 @@
+{
+  "objects": [
+    {
+      "failureAndRerunMode": "CASCADE",
+      "resourceRole": "DataPipelineDefaultResourceRole",
+      "role": "DataPipelineDefaultRole",
+      "pipelineLogUri": "s3://<BUCKET_NAME>",
+      "scheduleType": "ONDEMAND",
+      "name": "Default",
+      "id": "Default"
+    },
+    {
+      "name": "CliActivity",
+      "id": "CliActivity",
+      "runsOn": {
+        "ref": "Ec2Instance"
+      },
+      "type": "ShellCommandActivity",
+      "command": "(sudo yum -y update aws-cli) && (#{myCustomCmd})"
+    },
+    {
+      "instanceType": "t1.micro",
+      "name": "Ec2Instance",
+      "id": "Ec2Instance",
+      "type": "Ec2Resource",
+      "terminateAfter": "15 Minutes"
+    }
+  ],
+  "parameters": [
+    {
+      "watermark": "aws [options] <command> <subcommand> [parameters]",
+      "description": "A Custom command to execute",
+      "id": "myCustomCmd",
+      "type": "String"
+    }
+  ],
+  "values": {
+    "myAWSCLICmd": "aws s3 cp s3://<BUCKET_NAME>/simplescript.sh . && sh simplescript.sh"
+  }
+}

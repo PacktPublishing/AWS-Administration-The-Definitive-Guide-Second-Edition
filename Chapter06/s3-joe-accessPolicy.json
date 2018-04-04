@@ -1,0 +1,45 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:DeleteObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::useast-prod-stuff-01",
+                "arn:aws:s3:::useast-prod-stuff-01/Dummy"
+            ],
+            "Condition": {
+                "IpAddress": {
+                    "aws:SourceIp": "10.0.0.0/24"
+                },
+                "ForAllValues:StringEqualsIfExists": {
+                    "aws:username": "joe"
+                }
+            }
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListAllMyBuckets",
+                "s3:HeadBucket",
+                "s3:ListObjects"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "IpAddress": {
+                    "aws:SourceIp": "10.0.0.0/24"
+                },
+                "ForAllValues:StringEqualsIfExists": {
+                    "aws:username": "joe"
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,32 @@
+{
+  "objects": [
+    {
+      "failureAndRerunMode": "CASCADE",
+      "resourceRole": "DataPipelineDefaultResourceRole",
+      "role": "DataPipelineDefaultRole",
+      "pipelineLogUri": "s3://<BUCKET_NAME>",
+      "scheduleType": "ONDEMAND",
+      "name": "Default",
+      "id": "Default"
+    },
+    {
+      "resourceRole": "DataPipelineDefaultResourceRole",
+      "role": "DataPipelineDefaultRole",
+      "instanceType": "t1.micro",
+      "name": "EC2 instance",
+      "id": "ResourceId_9nWhq",
+      "type": "Ec2Resource",
+      "terminateAfter": "10 Minutes"
+    },
+    {
+      "name": "Echo a Hello World message",
+      "id": "ShellCommandActivityId_okx1o",
+      "runsOn": {
+        "ref": "ResourceId_9nWhq"
+      },
+      "type": "ShellCommandActivity",
+      "command": "echo \"This is just a Hello World message!\""
+    }
+  ],
+  "parameters": []
+}
